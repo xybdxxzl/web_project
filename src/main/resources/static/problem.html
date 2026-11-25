@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>题目 · Mini OJ</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="module" src="/js/problem.js"></script>
+</head>
+<body>
+    <nav id="top-nav" aria-label="顶部导航"></nav>
+    <main class="page">
+        <a class="back-link" href="/problems.html">返回题库</a>
+        <p id="problem-message" role="status">正在加载题目…</p>
+        <div class="problem-layout" id="problem-layout" hidden>
+            <article class="surface">
+                <h1 id="problem-title"></h1>
+                <p id="problem-limits" class="subtle"></p>
+                <div id="problem-description" class="plain-text"></div>
+                <section id="samples-section" aria-labelledby="samples-title" hidden>
+                    <h2 id="samples-title">样例</h2>
+                    <div id="problem-samples"></div>
+                    <p id="copy-message" role="status"></p>
+                </section>
+            </article>
+            <section class="surface" aria-labelledby="editor-title">
+                <h2 id="editor-title">代码编辑</h2>
+                <form id="submission-form" method="post" action="/api/submissions">
+                    <label>语言
+                        <select name="language">
+                            <option value="JAVA">Java</option>
+                            <option value="CPP">C++</option>
+                        </select>
+                    </label>
+                    <label>源代码
+                        <textarea id="code-editor" name="code" class="code-editor" rows="18" required
+                                  spellcheck="false" aria-describedby="editor-help"></textarea>
+                    </label>
+                    <small id="editor-help">Java 入口类为 Main，C++ 入口为 main 函数。请使用标准输入和输出。Tab 插入 4 个空格，Shift+Tab 返回上一项。</small>
+                    <button type="submit">提交代码</button>
+                    <p id="submission-message" class="plain-text" role="status"></p>
+                </form>
+            </section>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>题库 · Mini OJ</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="module" src="/js/problems.js"></script>
+</head>
+<body>
+    <nav id="top-nav" aria-label="顶部导航"></nav>
+    <main class="page">
+        <h1>题库</h1>
+        <form id="problem-filters" class="filter-bar">
+            <label>标题关键词
+                <input type="search" name="keyword" placeholder="搜索题目">
+            </label>
+            <label>难度
+                <select name="difficulty">
+                    <option value="">全部</option>
+                    <option value="EASY">简单</option>
+                    <option value="MEDIUM">中等</option>
+                    <option value="HARD">困难</option>
+                </select>
+            </label>
+            <button type="submit">搜索</button>
+        </form>
+        <p id="list-message" role="status"></p>
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr><th scope="col">编号</th><th scope="col">题目</th><th scope="col">难度</th><th scope="col">时间限制</th><th scope="col">内存限制</th></tr>
+                </thead>
+                <tbody id="problem-rows"></tbody>
+            </table>
+        </div>
+        <div class="pagination" aria-label="题库分页">
+            <button type="button" id="previous-page" disabled>上一页</button>
+            <span id="page-label" aria-live="polite"></span>
+            <button type="button" id="next-page" disabled>下一页</button>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: ${MINIOJ_DB_URL:jdbc:mysql://127.0.0.1:3306/minioj}
+    username: ${MINIOJ_DB_USER:minioj}
+    password: ${MINIOJ_DB_PASSWORD}
+  sql:
+    init:
+      platform: mysql

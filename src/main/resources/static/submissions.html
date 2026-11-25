@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>我的提交 · Mini OJ</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="module" src="/js/submissions.js"></script>
+</head>
+<body>
+    <nav id="top-nav" aria-label="顶部导航"></nav>
+    <main class="page">
+        <h1>我的提交</h1>
+        <p id="history-message" role="status"></p>
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">提交编号</th><th scope="col">题目</th><th scope="col">语言</th>
+                        <th scope="col">状态</th><th scope="col">耗时</th><th scope="col">提交时间</th>
+                    </tr>
+                </thead>
+                <tbody id="history-rows"></tbody>
+            </table>
+        </div>
+        <div class="pagination" aria-label="提交记录分页">
+            <button type="button" id="history-previous" disabled>上一页</button>
+            <span id="history-page" aria-live="polite"></span>
+            <button type="button" id="history-next" disabled>下一页</button>
+        </div>
+    </main>
+    <dialog id="submission-detail" aria-labelledby="submission-detail-title">
+        <div class="section-header">
+            <h2 id="submission-detail-title">提交详情</h2>
+            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
+        </div>
+        <p id="detail-message" role="status"></p>
+        <div id="detail-content" hidden>
+            <p id="detail-status"></p>
+            <h3>源代码</h3>
+            <pre id="detail-code" class="plain-text sample-text"></pre>
+            <section id="detail-error-section" hidden>
+                <h3>错误信息</h3>
+                <pre id="detail-error" class="plain-text sample-text"></pre>
+            </section>
+        </div>
+    </dialog>
+</body>
+</html>

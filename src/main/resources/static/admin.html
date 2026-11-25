@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>题目管理 · Mini OJ</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="module" src="/js/admin.js"></script>
+</head>
+<body>
+    <nav id="top-nav" aria-label="顶部导航"></nav>
+    <main class="page">
+        <h1>题目管理</h1>
+        <p id="admin-status" role="status">正在验证权限并加载题目…</p>
+        <fieldset id="admin-controls" class="admin-layout" aria-label="题目管理" hidden disabled>
+            <section class="surface" aria-labelledby="admin-list-heading">
+                <div class="section-header">
+                    <h2 id="admin-list-heading">题库</h2>
+                    <button type="button" id="new-problem">新增题目</button>
+                </div>
+                <ul id="admin-problems" class="admin-list"></ul>
+                <div class="pagination" aria-label="管理列表分页">
+                    <button type="button" id="admin-prev" disabled>上一页</button>
+                    <span id="admin-page"></span>
+                    <button type="button" id="admin-next" disabled>下一页</button>
+                </div>
+            </section>
+            <section class="surface" aria-labelledby="form-heading">
+                <h2 id="form-heading">新增题目</h2>
+                <form id="problem-form">
+                    <label>标题
+                        <input name="title" required maxlength="200">
+                    </label>
+                    <div class="form-fields">
+                        <label>难度
+                            <select name="difficulty" required>
+                                <option value="EASY">简单</option>
+                                <option value="MEDIUM">中等</option>
+                                <option value="HARD">困难</option>
+                            </select>
+                        </label>
+                        <label>时间限制（ms）
+                            <input type="number" name="timeLimitMs" min="1" value="1000" required>
+                        </label>
+                        <label>内存限制（MB）
+                            <input type="number" name="memoryLimitMb" min="1" value="256" required>
+                        </label>
+                    </div>
+                    <label>题面
+                        <textarea name="description" rows="8" required></textarea>
+                    </label>
+                    <div class="section-header">
+                        <h3>测试用例</h3>
+                        <button type="button" id="add-case">添加用例</button>
+                    </div>
+                    <div id="test-cases"></div>
+                    <button type="submit">保存题目</button>
+                </form>
+            </section>
+        </fieldset>
+    </main>
+    <template id="test-case-template">
+        <fieldset class="case-fields">
+            <legend></legend>
+            <div class="form-fields">
+                <label>输入<textarea name="input" rows="3"></textarea></label>
+                <label>预期输出<textarea name="expectedOutput" rows="3"></textarea></label>
+            </div>
+            <div class="section-header">
+                <label class="checkbox-label"><input type="checkbox" name="isSample">公开为样例</label>
+                <button type="button" class="danger-button">移除用例</button>
+            </div>
+        </fieldset>
+    </template>
+</body>
+</html>

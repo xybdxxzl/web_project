@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>注册 · Mini OJ</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="module" src="/js/auth-form.js"></script>
+</head>
+<body>
+    <nav id="top-nav" aria-label="顶部导航"></nav>
+    <main class="panel">
+        <h1>注册账号</h1>
+        <form id="auth-form" method="post" action="/api/auth/register" data-action="register">
+            <label>用户名
+                <input name="username" autocomplete="username" required
+                       minlength="3" maxlength="20" pattern="[A-Za-z0-9_]{3,20}"
+                       aria-describedby="username-guide">
+                <small id="username-guide">3–20 位字母、数字或下划线</small>
+            </label>
+            <label>密码
+                <input type="password" name="password" autocomplete="new-password"
+                       required minlength="6" maxlength="32" aria-describedby="password-guide">
+                <small id="password-guide">6–32 位</small>
+            </label>
+            <p id="form-message" role="status"></p>
+            <button type="submit">注册</button>
+        </form>
+        <p class="account-link"><a href="/login.html">返回登录</a></p>
+    </main>
+</body>
+</html>

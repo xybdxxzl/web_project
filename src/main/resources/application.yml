@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    url: jdbc:h2:file:./data/minioj
+    username: sa
+    password:
+  sql:
+    init:
+      mode: always
+      platform: h2
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+
+server:
+  port: 8082
+  servlet:
+    session:
+      cookie:
+        same-site: lax
+
+oj:
+  sandbox:
+    type: docker
+    docker:
+      startup-margin-ms: 1000
+  judge:
+    workers: 2
+    queue-capacity: 32
+    compile-timeout-ms: 10000
