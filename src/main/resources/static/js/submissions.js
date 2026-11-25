@@ -1,19 +1,12 @@
 import { request } from "./api.js";
 import "./nav.js";
+import { openModal, renderPagination, renderTableSkeleton } from "./ui.js";
 
 const rows = document.getElementById("history-rows");
 const message = document.getElementById("history-message");
-const previous = document.getElementById("history-previous");
-const next = document.getElementById("history-next");
-const pageLabel = document.getElementById("history-page");
-const dialog = document.getElementById("submission-detail");
-const detailContent = document.getElementById("detail-content");
-const detailMessage = document.getElementById("detail-message");
-const errorSection = document.getElementById("detail-error-section");
+const pagination = document.getElementById("history-pagination");
+const detailTemplate = document.getElementById("submission-detail-template");
 const dateFormat = new Intl.DateTimeFormat("zh-CN", { dateStyle: "short", timeStyle: "medium" });
-let page = 1;
-let totalPages = 0;
-let detailRequest;
 
 function badge(status) {
     const element = document.createElement("span");
@@ -48,55 +41,49 @@ function renderRow(item) {
 }
 
 async function loadPage(target) {
-    previous.disabled = true;
-    next.disabled = true;
+    pagination.setAttribute("aria-busy", "true");
     message.textContent = "正在加载提交记录…";
+    renderTableSkeleton(rows, 6);
 
     try {
         const history = await request("/api/submissions?" + new URLSearchParams({ page: target }));
-        page = history.page;
-        totalPages = history.totalPages;
         rows.replaceChildren();
         history.items.forEach(renderRow);
-        pageLabel.textContent = history.total
-            ? `第 ${page} / ${history.totalPages} 页，共 ${history.total} 条`
-            : "";
-        message.textContent = history.total ? "" : "暂无提交记录。";
+        renderPagination(pagination, history, loadPage);
+        message.textContent = history.total ? `共 ${history.total} 条提交` : "暂无提交记录。";
     } catch (error) {
+        rows.replaceChildren();
+        pagination.hidden = true;
         message.textContent = error.message;
     } finally {
-        previous.disabled = page <= 1;
-        next.disabled = page >= totalPages;
+        pagination.removeAttribute("aria-busy");
     }
 }
 
 async function showDetail(id) {
     const controller = new AbortController();
-    detailRequest = controller;
     const { signal } = controller;
-    detailContent.hidden = true;
-    detailMessage.textContent = "正在加载…";
-    document.getElementById("submission-detail-title").textContent = "提交 #" + id;
-    dialog.showModal();
+    const content = detailTemplate.content.firstElementChild.cloneNode(true);
+    const message = content.querySelector(".detail-message");
+    const dialog = openModal("提交 #" + id, content);
+    dialog.addEventListener("close", () => controller.abort(), { once: true });
 
     try {
         const item = await request("/api/submissions/" + id, { signal });
         signal.throwIfAborted();
         const elapsed = item.timeUsedMs === null ? "" : " · " + item.timeUsedMs + " ms";
-        document.getElementById("detail-status").replaceChildren(badge(item.status), elapsed);
-        document.getElementById("detail-code").textContent = item.code;
-        document.getElementById("detail-error").textContent = item.errorMessage ?? "";
-        errorSection.hidden = !item.errorMessage;
-        detailMessage.textContent = "";
-        detailContent.hidden = false;
+        content.querySelector(".detail-status").replaceChildren(badge(item.status));
+        content.querySelector(".detail-time").textContent = elapsed;
+        content.querySelector(".detail-code").textContent = item.code;
+        content.querySelector(".detail-error").textContent = item.errorMessage ?? "";
+        content.querySelector(".detail-error-section").hidden = !item.errorMessage;
+        message.hidden = true;
+        content.querySelector(".detail-content").hidden = false;
     } catch (error) {
         if (!signal.aborted) {
-            detailMessage.textContent = error.message;
+            message.textContent = error.message;
         }
     }
 }
 
-dialog.addEventListener("close", () => detailRequest.abort());
-previous.addEventListener("click", () => loadPage(page - 1));
-next.addEventListener("click", () => loadPage(page + 1));
 loadPage(1);

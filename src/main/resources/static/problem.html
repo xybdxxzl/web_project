@@ -4,6 +4,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>题目 · Mini OJ</title>
+    <script>
+        (() => {
+            let saved;
+            try { saved = localStorage.getItem("mini-oj:theme"); } catch {}
+            document.documentElement.dataset.theme = saved === "dark" || saved === "light"
+                ? saved : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        })();
+    </script>
+    <link rel="icon" href="data:,">
     <link rel="stylesheet" href="/css/style.css">
     <script type="module" src="/js/problem.js"></script>
 </head>
@@ -13,31 +22,49 @@
         <a class="back-link" href="/problems.html">返回题库</a>
         <p id="problem-message" role="status">正在加载题目…</p>
         <div class="problem-layout" id="problem-layout" hidden>
-            <article class="surface">
+            <article id="statement-pane" class="surface">
                 <h1 id="problem-title"></h1>
                 <p id="problem-limits" class="subtle"></p>
                 <div id="problem-description" class="plain-text"></div>
                 <section id="samples-section" aria-labelledby="samples-title" hidden>
                     <h2 id="samples-title">样例</h2>
                     <div id="problem-samples"></div>
-                    <p id="copy-message" role="status"></p>
                 </section>
             </article>
+            <div id="problem-divider" class="problem-divider" role="separator" tabindex="0"
+                 aria-label="题面面板宽度" aria-orientation="vertical" aria-controls="statement-pane"
+                 aria-valuemin="25" aria-valuemax="75" aria-valuenow="50"
+                 title="拖动调整宽度，双击恢复等宽"></div>
             <section class="surface" aria-labelledby="editor-title">
                 <h2 id="editor-title">代码编辑</h2>
                 <form id="submission-form" method="post" action="/api/submissions">
-                    <label>语言
-                        <select name="language">
-                            <option value="JAVA">Java</option>
-                            <option value="CPP">C++</option>
-                        </select>
-                    </label>
-                    <label>源代码
-                        <textarea id="code-editor" name="code" class="code-editor" rows="18" required
-                                  spellcheck="false" aria-describedby="editor-help"></textarea>
-                    </label>
-                    <small id="editor-help">Java 入口类为 Main，C++ 入口为 main 函数。请使用标准输入和输出。Tab 插入 4 个空格，Shift+Tab 返回上一项。</small>
-                    <button type="submit">提交代码</button>
+                    <div class="editor-tools">
+                        <label>语言
+                            <select name="language">
+                                <option value="JAVA">Java</option>
+                                <option value="CPP">C++</option>
+                            </select>
+                        </label>
+                        <button id="reset-template" type="button">重置模板</button>
+                    </div>
+                    <div class="editor-field">
+                        <label for="code-editor">源代码</label>
+                        <div class="editor-input">
+                            <div class="editor-gutter" aria-hidden="true"><pre id="editor-lines">1</pre></div>
+                            <textarea id="code-editor" name="code" class="code-editor" rows="18" wrap="off" required
+                                      spellcheck="false" autocapitalize="off" aria-describedby="editor-help"></textarea>
+                        </div>
+                    </div>
+                    <small id="editor-help">Java 入口类为 Main，C++ 入口为 main。Tab 缩进，Shift+Tab 反缩进，Ctrl+Enter 或 ⌘+Enter 提交。按 Esc 后再按 Tab 可离开编辑器。</small>
+                    <button type="submit" aria-keyshortcuts="Control+Enter Meta+Enter">提交代码</button>
+                    <div id="judge-progress" class="judge-progress" hidden>
+                        <div class="judge-progress-label">
+                            <span>通过测试点</span><span id="judge-count" class="numeric" aria-live="polite">0 / 0</span>
+                        </div>
+                        <div class="judge-progress-track" aria-hidden="true">
+                            <div id="judge-fill" class="judge-progress-fill"></div>
+                        </div>
+                    </div>
                     <p id="submission-message" class="plain-text" role="status"></p>
                 </form>
             </section>

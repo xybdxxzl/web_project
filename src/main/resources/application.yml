@@ -20,6 +20,8 @@ server:
         same-site: lax
 
 oj:
+  seed:
+    demo-data: false
   sandbox:
     type: docker
     docker:

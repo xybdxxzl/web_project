@@ -4,14 +4,52 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Mini OJ</title>
+    <script>
+        (() => {
+            let saved;
+            try { saved = localStorage.getItem("mini-oj:theme"); } catch {}
+            document.documentElement.dataset.theme = saved === "dark" || saved === "light"
+                ? saved : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        })();
+    </script>
+    <link rel="icon" href="data:,">
     <link rel="stylesheet" href="/css/style.css">
-    <script type="module" src="/js/nav.js"></script>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <script type="module" src="/js/pages/index.js"></script>
 </head>
 <body>
     <nav id="top-nav" aria-label="顶部导航"></nav>
-    <main class="panel">
-        <h1>Mini OJ</h1>
-        <p><a href="/problems.html">浏览题库</a></p>
+    <main class="page dashboard-page">
+        <section class="dashboard-hero" aria-labelledby="hero-title">
+            <h1 id="hero-title">Mini OJ 在线判题</h1>
+            <p>练习算法题，使用 Java 或 C++ 提交代码，实时查看判题结果。</p>
+            <div class="hero-actions">
+                <a class="hero-primary" href="/problems.html">开始刷题</a>
+                <a href="/rank.html">排行榜</a>
+                <a href="/profile.html">个人中心</a>
+            </div>
+        </section>
+        <dl id="site-metrics" class="metric-grid" aria-label="全站统计" aria-busy="true">
+            <div class="surface metric"><dt>总题数</dt><dd data-metric="totalProblems">—</dd></div>
+            <div class="surface metric"><dt>总提交</dt><dd data-metric="totalSubmissions">—</dd></div>
+            <div class="surface metric"><dt>注册用户</dt><dd data-metric="totalUsers">—</dd></div>
+            <div class="surface metric"><dt>全站通过率</dt><dd data-metric="acRate">—</dd></div>
+        </dl>
+        <section class="surface dashboard-section" aria-labelledby="recent-title">
+            <h2 id="recent-title">最近提交动态</h2>
+            <p id="recent-status" class="dashboard-status" role="status"></p>
+            <div class="table-wrap" role="region" tabindex="0" aria-label="最近提交列表">
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">用户</th><th scope="col">题目</th><th scope="col">语言</th>
+                            <th scope="col">状态</th><th scope="col">提交时间</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recent-rows"></tbody>
+                </table>
+            </div>
+        </section>
     </main>
 </body>
 </html>

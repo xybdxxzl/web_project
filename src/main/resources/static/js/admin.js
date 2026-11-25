@@ -1,5 +1,6 @@
 import { request } from "./api.js";
 import "./nav.js";
+import { confirmModal, renderPagination, showToast, skeleton } from "./ui.js";
 
 const endpoint = "/api/admin/problems";
 const controls = document.getElementById("admin-controls");
@@ -9,9 +10,9 @@ const caseList = document.getElementById("test-cases");
 const template = document.getElementById("test-case-template");
 const list = document.getElementById("admin-problems");
 const status = document.getElementById("admin-status");
-const pageLabel = document.getElementById("admin-page");
-const previous = document.getElementById("admin-prev");
-const next = document.getElementById("admin-next");
+const pagination = document.getElementById("admin-pagination");
+const loading = document.getElementById("admin-loading");
+const empty = document.getElementById("admin-empty");
 
 let editingId = null;
 let page = 1;
@@ -74,8 +75,8 @@ async function loadPage(target) {
         remove.className = "danger-button";
         remove.textContent = "删除";
         remove.setAttribute("aria-label", "删除 " + problem.title);
-        remove.addEventListener("click", () => {
-            if (window.confirm("确认删除「" + problem.title + "」及其所有测试用例？")) {
+        remove.addEventListener("click", async () => {
+            if (await confirmModal("删除题目", "确认删除「" + problem.title + "」及其所有测试用例？")) {
                 perform(() => removeProblem(problem.id));
             }
         });
@@ -83,9 +84,8 @@ async function loadPage(target) {
         list.append(item);
     }
 
-    pageLabel.textContent = result.total ? `第 ${page} / ${result.totalPages} 页` : "暂无题目";
-    previous.disabled = page <= 1;
-    next.disabled = page >= result.totalPages;
+    empty.hidden = result.total !== 0;
+    renderPagination(pagination, result, target => perform(() => loadPage(target)));
 }
 
 async function perform(action) {
@@ -94,7 +94,7 @@ async function perform(action) {
     try {
         await action();
     } catch (error) {
-        status.textContent = error.message;
+        showToast(error.message, "error");
     } finally {
         controls.disabled = false;
     }
@@ -106,7 +106,7 @@ async function removeProblem(id) {
         newProblem();
     }
     await loadPage(list.childElementCount === 1 && page > 1 ? page - 1 : page);
-    status.textContent = "题目已删除。";
+    showToast("题目已删除。", "success");
 }
 
 form.addEventListener("submit", event => {
@@ -139,7 +139,7 @@ form.addEventListener("submit", event => {
         editingId = saved.id;
         heading.textContent = "编辑题目 #" + editingId;
         await loadPage(page);
-        status.textContent = "题目已保存。";
+        showToast("题目已保存。", "success");
     });
 });
 
@@ -148,14 +148,14 @@ document.getElementById("new-problem").addEventListener("click", () => {
     newProblem();
 });
 document.getElementById("add-case").addEventListener("click", () => addCase());
-previous.addEventListener("click", () => perform(() => loadPage(page - 1)));
-next.addEventListener("click", () => perform(() => loadPage(page + 1)));
-
 newProblem();
+loading.append(...["45%", "72%", "58%", "68%", "48%"].map(skeleton));
 loadPage(1).then(() => {
     controls.hidden = false;
     controls.disabled = false;
     status.textContent = "";
 }).catch(error => {
     status.textContent = error.message;
+}).finally(() => {
+    loading.hidden = true;
 });

@@ -44,6 +44,10 @@ CREATE TABLE IF NOT EXISTS submissions (
 
 CREATE INDEX IF NOT EXISTS ix_submissions_status ON submissions (status);
 CREATE INDEX IF NOT EXISTS ix_submissions_history ON submissions (user_id, created_at DESC, id DESC);
+CREATE INDEX IF NOT EXISTS ix_submissions_problem ON submissions (problem_id);
+
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS passed_cases INT NOT NULL DEFAULT 0;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS total_cases INT NOT NULL DEFAULT 0;
 
 CREATE TABLE IF NOT EXISTS oj_bootstrap (
     seed_name VARCHAR(64) PRIMARY KEY

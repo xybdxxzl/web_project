@@ -4,6 +4,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>我的提交 · Mini OJ</title>
+    <script>
+        (() => {
+            let saved;
+            try { saved = localStorage.getItem("mini-oj:theme"); } catch {}
+            document.documentElement.dataset.theme = saved === "dark" || saved === "light"
+                ? saved : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        })();
+    </script>
+    <link rel="icon" href="data:,">
     <link rel="stylesheet" href="/css/style.css">
     <script type="module" src="/js/submissions.js"></script>
 </head>
@@ -12,7 +21,7 @@
     <main class="page">
         <h1>我的提交</h1>
         <p id="history-message" role="status"></p>
-        <div class="table-scroll">
+        <div class="table-wrap" tabindex="0" role="region" aria-label="提交记录列表">
             <table>
                 <thead>
                     <tr>
@@ -23,27 +32,21 @@
                 <tbody id="history-rows"></tbody>
             </table>
         </div>
-        <div class="pagination" aria-label="提交记录分页">
-            <button type="button" id="history-previous" disabled>上一页</button>
-            <span id="history-page" aria-live="polite"></span>
-            <button type="button" id="history-next" disabled>下一页</button>
-        </div>
+        <nav id="history-pagination" class="pagination" aria-label="提交记录分页" hidden></nav>
     </main>
-    <dialog id="submission-detail" aria-labelledby="submission-detail-title">
-        <div class="section-header">
-            <h2 id="submission-detail-title">提交详情</h2>
-            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
+    <template id="submission-detail-template">
+        <div>
+            <p class="detail-message" role="status">正在加载…</p>
+            <div class="detail-content" hidden>
+                <p><span class="detail-status"></span><span class="detail-time"></span></p>
+                <h3>源代码</h3>
+                <pre class="detail-code plain-text sample-text" tabindex="0"></pre>
+                <section class="detail-error-section" hidden>
+                    <h3>错误信息</h3>
+                    <pre class="detail-error plain-text sample-text" tabindex="0"></pre>
+                </section>
+            </div>
         </div>
-        <p id="detail-message" role="status"></p>
-        <div id="detail-content" hidden>
-            <p id="detail-status"></p>
-            <h3>源代码</h3>
-            <pre id="detail-code" class="plain-text sample-text"></pre>
-            <section id="detail-error-section" hidden>
-                <h3>错误信息</h3>
-                <pre id="detail-error" class="plain-text sample-text"></pre>
-            </section>
-        </div>
-    </dialog>
+    </template>
 </body>
 </html>

@@ -9,11 +9,13 @@ import com.minioj.repository.ProblemRepository;
 import com.minioj.service.ProblemService;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@Order(0)
 class DemoProblemInitializer implements ApplicationRunner {
 
     private final JdbcTemplate jdbc;

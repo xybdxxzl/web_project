@@ -1,5 +1,6 @@
 package com.minioj.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.minioj.entity.Difficulty;
@@ -23,7 +24,18 @@ public interface ProblemRepository extends JpaRepository<Problem, Long> {
             """)
     Page<Problem> search(@Param("difficulty") Difficulty difficulty, @Param("keyword") String keyword, Pageable pageable);
 
+    @Query("""
+            select new com.minioj.repository.ProblemRepository$DifficultyCount(
+                p.difficulty, count(distinct s.problemId), count(distinct p.id))
+            from Problem p left join Submission s on s.problemId = p.id and s.userId = :userId and s.status = AC
+            group by p.difficulty
+            """)
+    List<DifficultyCount> countByDifficulty(@Param("userId") Long userId);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select p from Problem p where p.id = :id")
     Optional<Problem> findForUpdate(@Param("id") Long id);
+
+    record DifficultyCount(Difficulty difficulty, long solved, long total) {
+    }
 }

@@ -7,6 +7,7 @@ import com.minioj.entity.Difficulty;
 import com.minioj.entity.Problem;
 import com.minioj.entity.TestCase;
 import com.minioj.repository.ProblemRepository;
+import com.minioj.repository.SubmissionRepository;
 import com.minioj.repository.TestCaseRepository;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +23,7 @@ class ProblemServiceTest {
     void publicDetailQueriesSamplesOnly() {
         ProblemRepository problems = mock(ProblemRepository.class);
         TestCaseRepository cases = mock(TestCaseRepository.class);
-        ProblemService service = new ProblemService(problems, cases);
+        ProblemService service = new ProblemService(problems, cases, mock(SubmissionRepository.class));
         when(problems.findById(1L)).thenReturn(Optional.of(
                 new Problem("A+B", "题面", 1000, 128, Difficulty.EASY)));
         when(cases.findByProblemIdAndSampleTrueOrderByIdAsc(1L)).thenReturn(List.of(

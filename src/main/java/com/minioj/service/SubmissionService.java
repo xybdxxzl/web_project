@@ -68,6 +68,7 @@ public class SubmissionService {
         }
         return new SubmissionResult(submission.getId(), submission.getProblemId(), submission.getLanguage(),
                 submission.getStatus(), submission.getTimeUsedMs(), submission.getMemoryUsedKb(),
-                submission.getErrorMessage(), submission.getCode(), submission.getCreatedAt());
+                submission.getErrorMessage(), submission.getCode(), submission.getCreatedAt(),
+                submission.getPassedCases(), submission.getTotalCases());
     }
 }

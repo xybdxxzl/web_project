@@ -64,6 +64,8 @@ class SubmissionFlowTest {
         long submissionId = accepted.path("submissionId").asLong();
         var result = awaitTerminal(submissionId);
         assertThat(result.path("status").asText()).isEqualTo("AC");
+        assertThat(result.path("passedCases").asInt(-1)).isEqualTo(3);
+        assertThat(result.path("totalCases").asInt(-1)).isEqualTo(3);
         assertThat(result.path("timeUsedMs").asLong()).isNotNegative();
         assertThat(result.path("code").asText()).isEqualTo(code);
 

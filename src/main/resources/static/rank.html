@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>排行榜 · Mini OJ</title>
+    <script>
+        (() => {
+            let saved;
+            try { saved = localStorage.getItem("mini-oj:theme"); } catch {}
+            document.documentElement.dataset.theme = saved === "dark" || saved === "light"
+                ? saved : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        })();
+    </script>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <script type="module" src="/js/pages/rank.js"></script>
+</head>
+<body>
+    <nav id="top-nav" aria-label="顶部导航"></nav>
+    <main class="page dashboard-page">
+        <h1>排行榜</h1>
+        <ol id="ranking-podium" class="podium" aria-label="排行榜前三名"></ol>
+        <section class="surface dashboard-section" aria-labelledby="ranking-title">
+            <h2 id="ranking-title">完整排名</h2>
+            <p id="ranking-status" class="dashboard-status" role="status"></p>
+            <div class="table-wrap" tabindex="0" role="region" aria-label="排行榜列表">
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">名次</th><th scope="col">用户</th><th scope="col">通过题数</th>
+                            <th scope="col">提交次数</th><th scope="col">通过率</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ranking-rows"></tbody>
+                </table>
+            </div>
+            <nav id="ranking-pagination" class="pagination" aria-label="排行榜分页" hidden></nav>
+        </section>
+    </main>
+    <template id="podium-card">
+        <li class="surface podium-card">
+            <span class="podium-medal"></span>
+            <h2 class="podium-username"></h2>
+            <dl>
+                <div><dt>通过题数</dt><dd class="podium-solved numeric"></dd></div>
+                <div><dt>通过率</dt><dd class="podium-rate numeric"></dd></div>
+            </dl>
+        </li>
+    </template>
+</body>
+</html>

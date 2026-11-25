@@ -14,6 +14,8 @@ public interface TestCaseRepository extends JpaRepository<TestCase, Long> {
 
     List<TestCase> findByProblemIdAndSampleTrueOrderByIdAsc(Long problemId);
 
+    int countByProblemId(Long problemId);
+
     @Modifying
     @Query("delete from TestCase t where t.problemId = :problemId")
     void deleteForProblem(@Param("problemId") Long problemId);

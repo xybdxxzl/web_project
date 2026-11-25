@@ -1,17 +1,23 @@
 package com.minioj.service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.minioj.dto.ProblemDetails;
 import com.minioj.dto.ProblemDetails.TestCaseView;
 import com.minioj.dto.ProblemPage;
 import com.minioj.dto.ProblemRequest;
 import com.minioj.dto.ProblemSummary;
+import com.minioj.dto.ProblemSummary.UserStatus;
 import com.minioj.entity.Difficulty;
 import com.minioj.entity.Problem;
 import com.minioj.entity.TestCase;
 import com.minioj.exception.BizException;
 import com.minioj.repository.ProblemRepository;
+import com.minioj.repository.SubmissionRepository;
+import com.minioj.repository.SubmissionRepository.ProblemCounts;
 import com.minioj.repository.TestCaseRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,19 +32,31 @@ public class ProblemService {
 
     private final ProblemRepository problems;
     private final TestCaseRepository testCases;
+    private final SubmissionRepository submissions;
 
-    public ProblemService(ProblemRepository problems, TestCaseRepository testCases) {
+    public ProblemService(ProblemRepository problems, TestCaseRepository testCases, SubmissionRepository submissions) {
         this.problems = problems;
         this.testCases = testCases;
+        this.submissions = submissions;
     }
 
-    @Transactional(readOnly = true)
-    public ProblemPage list(int page, int size, Difficulty difficulty, String keyword) {
-        Page<ProblemSummary> result = problems.search(
-                        difficulty, keyword.strip(), PageRequest.of(page - 1, size, Sort.by("id")))
-                .map(problem -> new ProblemSummary(problem.getId(), problem.getTitle(), problem.getDifficulty(),
-                        problem.getTimeLimitMs(), problem.getMemoryLimitMb()));
-        return new ProblemPage(result.getContent(), page, size, result.getTotalElements(), result.getTotalPages());
+    @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
+    public ProblemPage list(int page, int size, Difficulty difficulty, String keyword, Long userId) {
+        Page<Problem> result = problems.search(difficulty, keyword.strip(), PageRequest.of(page - 1, size, Sort.by("id")));
+        List<Long> ids = result.getContent().stream().map(Problem::getId).toList();
+        Map<Long, ProblemCounts> counts = ids.isEmpty() ? Map.of() : submissions.countForProblems(ids, userId).stream()
+                .collect(Collectors.toMap(ProblemCounts::problemId, Function.identity()));
+        List<ProblemSummary> items = result.getContent().stream()
+                .map(problem -> summary(problem, counts.get(problem.getId())))
+                .toList();
+        return new ProblemPage(items, page, size, result.getTotalElements(), result.getTotalPages());
+    }
+
+    private ProblemSummary summary(Problem problem, ProblemCounts counts) {
+        UserStatus status = counts.userAcCount() > 0 ? UserStatus.AC
+                : counts.userSubmitCount() > 0 ? UserStatus.TRIED : UserStatus.NONE;
+        return new ProblemSummary(problem.getId(), problem.getTitle(), problem.getDifficulty(), problem.getTimeLimitMs(),
+                problem.getMemoryLimitMb(), counts.submitCount(), counts.acCount(), status);
     }
 
     @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)

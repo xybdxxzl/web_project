@@ -84,6 +84,15 @@ class SubmissionControllerTest {
 
         assertThat(awaitResult(submissionId)).isEqualTo(expected);
         var submission = submissions.findById(submissionId).orElseThrow();
+        assertThat(submission.getTotalCases()).isEqualTo(expected == JudgeStatus.CE ? 0 : 2);
+        mvc.perform(get("/api/submissions/{id}", submissionId).session(session))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.totalCases").value(submission.getTotalCases()))
+                .andExpect(jsonPath("$.data.passedCases").value(switch (expected) {
+                    case AC -> 2;
+                    case RE -> 1;
+                    default -> 0;
+                }));
         if (expected == JudgeStatus.CE) {
             assertThat(submission.getErrorMessage()).contains("编译失败", "Main.java");
             assertThat(submission.getTimeUsedMs()).isNull();

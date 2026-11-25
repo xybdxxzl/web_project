@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>个人中心 · Mini OJ</title>
+    <script>
+        (() => {
+            let saved;
+            try { saved = localStorage.getItem("mini-oj:theme"); } catch {}
+            document.documentElement.dataset.theme = saved === "dark" || saved === "light"
+                ? saved : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        })();
+    </script>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <script type="module" src="/js/pages/profile.js"></script>
+</head>
+<body>
+    <nav id="top-nav" aria-label="顶部导航"></nav>
+    <main class="page dashboard-page">
+        <h1>个人中心</h1>
+        <p id="profile-status" class="dashboard-status" role="status">正在加载个人统计…</p>
+        <div id="profile-loading" class="surface loading-lines" aria-hidden="true"></div>
+        <div id="profile-summary" class="profile-summary" hidden>
+            <dl class="metric-grid profile-metrics" aria-label="做题统计">
+                <div class="surface metric"><dt>用户</dt><dd id="profile-username"></dd></div>
+                <div class="surface metric"><dt>提交次数</dt><dd id="profile-submissions"></dd></div>
+                <div class="surface metric"><dt>通过题数</dt><dd id="profile-solved"></dd></div>
+            </dl>
+            <div class="profile-charts">
+                <section class="surface dashboard-section" aria-labelledby="difficulty-title">
+                    <h2 id="difficulty-title">难度分布</h2>
+                    <div class="chart-stage ring-stage">
+                        <canvas id="difficulty-chart" role="img" aria-label="各难度通过题数的环形图"></canvas>
+                    </div>
+                    <ul id="difficulty-legend" class="chart-legend difficulty-legend" aria-label="已通过 / 题库总数">
+                        <li data-difficulty="EASY"><span class="legend-mark"></span><span>简单</span><strong></strong></li>
+                        <li data-difficulty="MEDIUM"><span class="legend-mark"></span><span>中等</span><strong></strong></li>
+                        <li data-difficulty="HARD"><span class="legend-mark"></span><span>困难</span><strong></strong></li>
+                    </ul>
+                </section>
+                <section class="surface dashboard-section" aria-labelledby="trend-title">
+                    <h2 id="trend-title">近 30 天提交趋势</h2>
+                    <div class="chart-stage trend-stage">
+                        <canvas id="trend-chart" role="img" aria-label="最近 30 天每天的总提交数和 AC 数"></canvas>
+                    </div>
+                    <ul class="chart-legend trend-legend" aria-label="趋势图图例">
+                        <li><span class="legend-mark trend-total"></span>总提交</li>
+                        <li><span class="legend-mark trend-accepted"></span>AC</li>
+                    </ul>
+                </section>
+            </div>
+            <section class="surface dashboard-section" aria-labelledby="calendar-title">
+                <h2 id="calendar-title">一年提交热力日历</h2>
+                <div class="chart-scroll" tabindex="0" role="region" aria-label="提交日历，可横向滚动">
+                    <div class="chart-stage heat-stage">
+                        <canvas id="heat-chart" role="img" aria-label="最近 365 天每日提交次数的热力图"></canvas>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+</body>
+</html>

@@ -47,6 +47,12 @@ public class Submission {
     @Column(nullable = false, length = 16)
     private JudgeStatus status;
 
+    @Column(nullable = false)
+    private int passedCases;
+
+    @Column(nullable = false)
+    private int totalCases;
+
     private Long timeUsedMs;
     private Long memoryUsedKb;
 
@@ -57,11 +63,18 @@ public class Submission {
     private Instant createdAt;
 
     public Submission(Long userId, Long problemId, LanguageType language, String code) {
+        this(userId, problemId, language, code, JudgeStatus.PENDING, Instant.now(), 0, 0);
+    }
+
+    public Submission(Long userId, Long problemId, LanguageType language, String code,
+                      JudgeStatus status, Instant createdAt, int passedCases, int totalCases) {
         this.userId = userId;
         this.problemId = problemId;
         this.language = language;
         this.code = code;
-        this.status = JudgeStatus.PENDING;
-        this.createdAt = Instant.now();
+        this.status = status;
+        this.createdAt = createdAt;
+        this.passedCases = passedCases;
+        this.totalCases = totalCases;
     }
 }

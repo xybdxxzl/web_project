@@ -4,6 +4,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>题库 · Mini OJ</title>
+    <script>
+        (() => {
+            let saved;
+            try { saved = localStorage.getItem("mini-oj:theme"); } catch {}
+            document.documentElement.dataset.theme = saved === "dark" || saved === "light"
+                ? saved : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        })();
+    </script>
+    <link rel="icon" href="data:,">
     <link rel="stylesheet" href="/css/style.css">
     <script type="module" src="/js/problems.js"></script>
 </head>
@@ -26,19 +35,19 @@
             <button type="submit">搜索</button>
         </form>
         <p id="list-message" role="status"></p>
-        <div class="table-scroll">
-            <table>
+        <div class="table-wrap" tabindex="0" role="region" aria-label="题库列表">
+            <table class="table-problems">
                 <thead>
-                    <tr><th scope="col">编号</th><th scope="col">题目</th><th scope="col">难度</th><th scope="col">时间限制</th><th scope="col">内存限制</th></tr>
+                    <tr>
+                        <th scope="col">状态</th><th scope="col">编号</th><th scope="col">题目</th>
+                        <th scope="col">难度</th><th scope="col">时间限制</th><th scope="col">内存限制</th>
+                        <th scope="col">通过率</th>
+                    </tr>
                 </thead>
                 <tbody id="problem-rows"></tbody>
             </table>
         </div>
-        <div class="pagination" aria-label="题库分页">
-            <button type="button" id="previous-page" disabled>上一页</button>
-            <span id="page-label" aria-live="polite"></span>
-            <button type="button" id="next-page" disabled>下一页</button>
-        </div>
+        <nav id="problem-pagination" class="pagination" aria-label="题库分页" hidden></nav>
     </main>
 </body>
 </html>

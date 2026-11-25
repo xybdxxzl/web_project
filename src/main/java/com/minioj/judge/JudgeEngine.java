@@ -106,6 +106,7 @@ public class JudgeEngine {
                 return new Verdict(JudgeStatus.CE, null, compileError(compilation));
             }
 
+            submissions.setTotalCases(job.submissionId(), job.testCases().size());
             long maximumTime = 0;
             int caseNumber = 0;
             for (TestCase testCase : job.testCases()) {
@@ -116,6 +117,7 @@ public class JudgeEngine {
                 if (verdict.status() != JudgeStatus.AC) {
                     return verdict;
                 }
+                submissions.incrementPassedCases(job.submissionId());
             }
             return new Verdict(JudgeStatus.AC, maximumTime, null);
         } finally {

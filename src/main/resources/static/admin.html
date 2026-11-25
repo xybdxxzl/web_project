@@ -4,6 +4,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>题目管理 · Mini OJ</title>
+    <script>
+        (() => {
+            let saved;
+            try { saved = localStorage.getItem("mini-oj:theme"); } catch {}
+            document.documentElement.dataset.theme = saved === "dark" || saved === "light"
+                ? saved : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        })();
+    </script>
+    <link rel="icon" href="data:,">
     <link rel="stylesheet" href="/css/style.css">
     <script type="module" src="/js/admin.js"></script>
 </head>
@@ -12,6 +21,7 @@
     <main class="page">
         <h1>题目管理</h1>
         <p id="admin-status" role="status">正在验证权限并加载题目…</p>
+        <div id="admin-loading" class="surface loading-lines" aria-hidden="true"></div>
         <fieldset id="admin-controls" class="admin-layout" aria-label="题目管理" hidden disabled>
             <section class="surface" aria-labelledby="admin-list-heading">
                 <div class="section-header">
@@ -19,11 +29,8 @@
                     <button type="button" id="new-problem">新增题目</button>
                 </div>
                 <ul id="admin-problems" class="admin-list"></ul>
-                <div class="pagination" aria-label="管理列表分页">
-                    <button type="button" id="admin-prev" disabled>上一页</button>
-                    <span id="admin-page"></span>
-                    <button type="button" id="admin-next" disabled>下一页</button>
-                </div>
+                <p id="admin-empty" class="subtle" hidden>暂无题目。</p>
+                <nav id="admin-pagination" class="pagination" aria-label="管理列表分页" hidden></nav>
             </section>
             <section class="surface" aria-labelledby="form-heading">
                 <h2 id="form-heading">新增题目</h2>
