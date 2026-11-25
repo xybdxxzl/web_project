@@ -300,12 +300,14 @@ export function renderHeatCalendar(canvas, days) {
     const hasActivity = days.some(day => day.count > 0);
     const months = [];
     for (const [index, day] of days.entries()) {
-        if (index === 0 || day.date.endsWith("-01")) {
+        if (day.date.endsWith("-01")) {
             const column = Math.floor((index + offset) / DAYS_PER_WEEK);
-            if (!months.length || column - months.at(-1).column >= 2) {
-                months.push({ column, month: Number(day.date.slice(5, 7)) });
-            }
+            months.push({ column, month: Number(day.date.slice(5, 7)) });
         }
+    }
+    // 热力图从月中开始时，只有空间足够才标注最前面的残月。
+    if (days.length && (!months.length || months[0].column >= 3)) {
+        months.unshift({ column: 0, month: Number(days[0].date.slice(5, 7)) });
     }
 
     mount(canvas, (context, { width, height, colors, point }) => {
